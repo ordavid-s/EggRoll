@@ -62,7 +62,8 @@ export const Settings = () => {
   const toggleHotspotOnPress = () => {
     async function toggleLocalHotspot(state) {
       try {
-        // await HotspotManager.setLocalHotspotEnabled(state);
+        console.log(state);
+        await HotspotManager.setHotspotEnabled(state);
         Toast.show(`Local Hotspot ${state ? "enabled" : "disabled"}`, {
           duration: Toast.durations.SHORT,
           animation: true,
@@ -70,12 +71,13 @@ export const Settings = () => {
         });
       } catch (error) {
         if (error instanceof TetheringError) {
-          Toast.show("Error starting Local Hotspot", {
+          Toast.show("Error starting Local Hotspot: " + error, {
             duration: Toast.durations.SHORT,
             animation: true,
             hideOnPress: true,
             backgroundColor: "red",
           });
+          console.log(error);
         }
         console.log(error);
       }
@@ -94,10 +96,6 @@ export const Settings = () => {
     ? "Deactivate Hotspot"
     : "Activate Hotspot";
   const hotspotButtonColor = hotspotStatus ? "#dc3545" : "#007bff";
-
-  const scanForDevicesOnPress = () => {
-    scanForDevices();
-  };
 
   return (
     <View style={styles.container}>
