@@ -1,3 +1,5 @@
+import "react-native-gesture-handler";
+import { RootSiblingParent } from "react-native-root-siblings";
 import React, { useEffect } from "react";
 import { PermissionsAndroid, Linking } from "react-native";
 import { ThemeProvider } from "styled-components/native";
@@ -14,6 +16,8 @@ import { Navigation } from "./src/infrastructure/navigation";
 const requestPermissions = async () => {
   const granted = await PermissionsAndroid.requestMultiple([
     PermissionsAndroid.PERMISSIONS.NEARBY_WIFI_DEVICES,
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
   ]);
 
   console.log("granted", granted);
@@ -26,17 +30,6 @@ export default function App() {
       console.log("requesting");
       const permissionStatus = await requestPermissions();
       console.log("permissionStatus", permissionStatus);
-      if (
-        permissionStatus[PermissionsAndroid.PERMISSIONS.NEARBY_WIFI_DEVICES] ===
-        "granted"
-      ) {
-        console.log("granted permission");
-      } else if (
-        permissionStatus[PermissionsAndroid.PERMISSIONS.NEARBY_WIFI_DEVICES] ===
-        "never_ask_again"
-      ) {
-        // Linking.openSettings();
-      }
     }
     getPerm();
   }, []);
@@ -53,8 +46,10 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <Navigation />
-    </ThemeProvider>
+    <RootSiblingParent>
+      <ThemeProvider theme={theme}>
+        <Navigation />
+      </ThemeProvider>
+    </RootSiblingParent>
   );
 }

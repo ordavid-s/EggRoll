@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Text } from "react-native";
 import styled from "styled-components";
+import { WebView } from "react-native-webview";
 
 import { SafeArea } from "../../../components/utility/safe-area.component";
 
@@ -9,6 +11,7 @@ CenteredContainer = styled(SafeArea)`
   justify-content: center;
 `;
 
-export const VideoHub = () => {
-  return <CenteredContainer></CenteredContainer>;
+export const ConnectedDeviceScreen = ({ device }) => {
+  // return <WebView source={{ uri: device.url }} />;
+  return <WebView source={{ uri: "https://infinite.red" }} />;
 };

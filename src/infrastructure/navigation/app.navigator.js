@@ -1,15 +1,14 @@
 import React, { useContext } from "react";
-import {
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import styled from "styled-components/native";
 
 import { View } from "react-native";
-import { VideoHub } from "../../features/video/screens/video.screen";
+import { ConnectedDeviceScreen } from "../../features/connected-device/screens/connected-device.screen";
 import { Settings } from "../../features/settings/screens/settings.screen";
+import { ConnectedDevicesContextProvider } from "../../services/connected-devices/connected-devices.context";
+import { DeviceViewer } from "../../features/device-viewer/screens/device-viewer.screen";
 
 const TitleContainer = styled.View`
   flex-direction: row;
@@ -37,8 +36,10 @@ const TAB_ICON = {
 const Tab = createBottomTabNavigator();
 
 export const AppNavigator = () => (
-  <Tab.Navigator screenOptions={createScreenOptions}>
-    <Tab.Screen name="Cameras" component={VideoHub} />
-    <Tab.Screen name="Settings" component={Settings} />
-  </Tab.Navigator>
+  <ConnectedDevicesContextProvider>
+    <Tab.Navigator screenOptions={createScreenOptions}>
+      <Tab.Screen name="Cameras" component={DeviceViewer} />
+      <Tab.Screen name="Settings" component={Settings} />
+    </Tab.Navigator>
+  </ConnectedDevicesContextProvider>
 );
