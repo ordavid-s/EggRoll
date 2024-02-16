@@ -1,19 +1,17 @@
-import React, { useState, createContext } from "react";
-import { ConnectedDevice } from "./connected-device";
-import HotspotManager, {
-  Device,
-  TetheringError,
-} from "@react-native-tethering/hotspot";
+import React, { useState, createContext, useCallback, useEffect } from "react";
 
 export const ConnectedDevicesContext = createContext();
 
 export const ConnectedDevicesContextProvider = ({ children }) => {
-  const [connectedDevices, setConnectedDevices] = useState([
-    new ConnectedDevice("10.0.0.6"),
-  ]);
+  const [connectedDevices, setConnectedDevices] = useState([]);
+
+  let connectedDevicesSet = new Set();
 
   const appendDevice = (device) => {
-    setConnectedDevices((arr) => [...arr, device]);
+    if (!connectedDevicesSet.has(device.ip)) {
+      setConnectedDevices((arr) => [...arr, device]);
+      connectedDevicesSet.add(device.ip);
+    }
   };
 
   const setDevices = (devices) => {
@@ -21,34 +19,11 @@ export const ConnectedDevicesContextProvider = ({ children }) => {
   };
 
   const removeDevice = (deviceIp) => {
+    connectedDevicesSet.delete(deviceIp);
     var filtered = connectedDevices.filter(function (el) {
       return el.ip != deviceIp;
     });
     setConnectedDevices((arr) => [...filtered]);
-  };
-
-  const scanForDevices = () => {
-    async function getDevices() {
-      try {
-        const devices = await HotspotManager.getConnectedDevices();
-        return devices;
-      } catch (error) {
-        if (error instanceof TetheringError) {
-          console.log("tether error");
-          return [];
-        }
-        console.log(error);
-        return [];
-      }
-    }
-    console.log("scanning for devices");
-    deviceList = getDevices()
-      .then((deviceList) => {
-        setDevices(deviceList.map((d) => d.ipAddress));
-      })
-      .catch(() => {
-        console.log("error scanning");
-      });
   };
 
   return (
@@ -58,7 +33,6 @@ export const ConnectedDevicesContextProvider = ({ children }) => {
         appendDevice,
         setDevices,
         removeDevice,
-        scanForDevices,
       }}
     >
       {children}

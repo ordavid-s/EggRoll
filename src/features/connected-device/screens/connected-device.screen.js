@@ -34,5 +34,4 @@ export const ConnectedDeviceScreen = ({ route }) => {
       />
     </ScreenContainer>
   );
-  // return <WebView source={{ uri: "https://infinite.red" }} />;
 };

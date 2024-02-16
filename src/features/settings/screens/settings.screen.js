@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import Toast from "react-native-root-toast";
 
+import { UdpServerContext } from "../../../services/udp-server/udp-server.context";
 import { ConnectedDevicesContext } from "../../../services/connected-devices/connected-devices.context";
 import { Text } from "../../../components/typography/text.component";
 import { SafeArea } from "../../../components/utility/safe-area.component";
@@ -40,6 +41,13 @@ const isHotspotEnabled = async () => {
 export const Settings = () => {
   const [hotspotStatus, setHotspotStatus] = useState(false);
   const { scanForDevices } = useContext(ConnectedDevicesContext);
+  const { startServer, endServer } = useContext(UdpServerContext);
+
+  useEffect(() => {
+    startServer();
+    return () => endServer();
+  }, []);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       isHotspotEnabled().then((res) => {
@@ -53,13 +61,15 @@ export const Settings = () => {
         }
         setHotspotStatus(res);
       });
-    }, 5000);
+    }, 3000);
 
     // Clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [hotspotStatus]);
 
-  const toggleHotspotOnPress = () => {
+  const toggleHotspotOnPress = useCallback(() => {
     async function toggleLocalHotspot(state) {
       try {
         console.log(state);
@@ -85,13 +95,15 @@ export const Settings = () => {
 
     // Toggle hotspot status
     if (hotspotStatus) {
-      toggleLocalHotspot(false).then(() => setHotspotStatus(false));
+      toggleLocalHotspot(false).then(() => {
+        setHotspotStatus(false);
+      });
     } else {
       toggleLocalHotspot(true).then(() => {
         setHotspotStatus(true);
       });
     }
-  };
+  }, [hotspotStatus]);
   const hotspotButtonText = hotspotStatus
     ? "Deactivate Hotspot"
     : "Activate Hotspot";
@@ -108,13 +120,6 @@ export const Settings = () => {
           color={hotspotButtonColor}
         >
           {hotspotButtonText}
-        </Button>
-        <Button
-          mode="contained"
-          disabled={!hotspotStatus}
-          onPress={scanForDevices}
-        >
-          Scan for Devices
         </Button>
       </View>
     </View>

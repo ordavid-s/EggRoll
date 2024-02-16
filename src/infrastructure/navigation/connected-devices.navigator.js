@@ -16,7 +16,6 @@ export const ConnectedDevicesSideMenu = () => {
   return (
     <Drawer.Navigator>
       {connectedDevices.map((device) => {
-        console.log(device);
         return (
           <Drawer.Screen
             key={device.ip}

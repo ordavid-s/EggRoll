@@ -4,8 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import styled from "styled-components/native";
 
-import { View } from "react-native";
-import { ConnectedDeviceScreen } from "../../features/connected-device/screens/connected-device.screen";
+import { UdpServerContextProvider } from "../../services/udp-server/udp-server.context";
 import { Settings } from "../../features/settings/screens/settings.screen";
 import { ConnectedDevicesContextProvider } from "../../services/connected-devices/connected-devices.context";
 import { DeviceViewer } from "../../features/device-viewer/screens/device-viewer.screen";
@@ -37,9 +36,11 @@ const Tab = createBottomTabNavigator();
 
 export const AppNavigator = () => (
   <ConnectedDevicesContextProvider>
-    <Tab.Navigator screenOptions={createScreenOptions}>
-      <Tab.Screen name="Cameras" component={DeviceViewer} />
-      <Tab.Screen name="Settings" component={Settings} />
-    </Tab.Navigator>
+    <UdpServerContextProvider>
+      <Tab.Navigator screenOptions={createScreenOptions}>
+        <Tab.Screen name="Cameras" component={DeviceViewer} />
+        <Tab.Screen name="Settings" component={Settings} />
+      </Tab.Navigator>
+    </UdpServerContextProvider>
   </ConnectedDevicesContextProvider>
 );
