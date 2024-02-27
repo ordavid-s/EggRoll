@@ -1,5 +1,10 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  NativeModules,
+} from "react-native";
 import { Button } from "react-native-paper";
 import Toast from "react-native-root-toast";
 
@@ -42,6 +47,7 @@ export const Settings = () => {
   const [hotspotStatus, setHotspotStatus] = useState(false);
   const { scanForDevices } = useContext(ConnectedDevicesContext);
   const { startServer, endServer } = useContext(UdpServerContext);
+  const { WifiManagerModule } = NativeModules;
 
   useEffect(() => {
     startServer();
@@ -92,7 +98,6 @@ export const Settings = () => {
         console.log(error);
       }
     }
-
     // Toggle hotspot status
     if (hotspotStatus) {
       toggleLocalHotspot(false).then(() => {
@@ -120,6 +125,15 @@ export const Settings = () => {
           color={hotspotButtonColor}
         >
           {hotspotButtonText}
+        </Button>
+        <Button
+          onPress={() => {
+            console.log("pressed");
+            WifiManagerModule.createCalendarEvent("one", "two");
+            WifiManagerModule.startLocalOnlyHotspotWithConfig();
+          }}
+        >
+          Hi
         </Button>
       </View>
     </View>
